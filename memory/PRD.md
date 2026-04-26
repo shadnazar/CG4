@@ -1,6 +1,73 @@
 # Celesta Glow PRD
 
-## Latest Update: April 26, 2026 — Categories / Routine / Account redesign
+## Latest Update: April 26, 2026 — Unified niche pages + banner-as-background hero
+
+### What's New (this iteration)
+1. **New `<NicheHero>` component** — single banner card with the full-bleed user-provided artwork as the background and the text content (eyebrow chip → big italic title → subtitle → 2 pill CTAs) overlaid on the LEFT half. White-fade gradient overlay ensures legibility on top of any artwork. Used identically across all 3 niche pages.
+2. **All 3 niche pages now share an identical 5-section structure**:
+   - Search bar
+   - `<NicheHero>` banner
+   - `<TrustStrip>` (4 trust pillars)
+   - Bestsellers grid (same `<ProductCard>`, niche-filtered)
+   - Routine-builder CTA card
+   (Anti-Aging adds the Complete Kit flagship section between bestsellers and CTA.)
+3. **Anti-Aging Homepage redesigned** from scratch — removed the old multi-banner carousel, intro hero, FAQ, clinical results, etc. Now matches Skincare/Cosmetics structure exactly. Banner uses the user-provided `Age Reset Cream` artwork.
+4. **Skincare Homepage** now uses banner-as-background `Daily Defense Sunscreen` artwork.
+5. **Cosmetics Homepage** uses placeholder banner (user will swap in their own artwork later).
+6. **Categories de-duplicated** — `concerns_seed.deactivate_legacy_cosmetics_dupes` migration deactivates legacy generic cosmetics categories (`cosmetics-makeup`, `lipstick`, `eye-makeup`, `face-makeup`) and remaps any products from those slugs to the more specific new ones. Cosmetics list dropped from 16 → 12 clean unique sub-categories.
+
+### Earlier this session
+- New `/categories`, `/routine`, `/account` pages
+- Mobile bottom nav: Home / Categories / Routine / Account / Cart
+- 15 new sub-categories seeded in `concerns_seed.py`
+
+### Three-Niche Structure (unchanged routes)
+1. **Anti-Aging** (`/`) — green/emerald
+2. **Skincare** (`/skincare`) — cyan
+3. **Cosmetics & Makeup** (`/cosmetics`) — rose
+
+### Backend
+- Collections: `niches`, `concerns`, `categories`, `products`, `combos`
+- 17 products + 21 active categories (4 deactivated dupes hidden) + 8 concerns + 3 niches + 4 combos
+- API: `GET /api/niches`, `/api/concerns(/:slug)`, `/api/categories(/:slug)` (active only), `/api/products?niche=&category=&concern=`
+- Order tracking: `POST /api/track-order { phone }`
+- Admin: `/admin` → password `celestaglow2024` + `X-Admin-Token` header
+
+## Pending / Backlog
+
+### P1
+- **Cosmetics banner image** (user will provide later)
+- Wire real backend auth for `/account` — `/api/customers/login` with bcrypt + JWT
+- Replace simulated routine pick with real Emergent LLM call when a real key is set
+- Re-introduce FAQ accordion as a footer-shared block across all 3 niche pages
+- Real packaging photography for the 17 products
+
+### P2
+- Order Success page Meta Pixel + Google Ads conversion ID wiring
+- Multi-product email confirmation template
+- `/category/:slug` pages for all 21 active categories — verify graceful empty state when 0 products
+
+### P3 — Growth
+- Personalized "For You" home strip
+- Customer referral program
+- Wishlist persistence
+- Subscribe & Save monthly auto-reorder
+
+## Credentials
+- Admin: password `celestaglow2024` at `/admin`
+- Employees: `orderteam`/`VclhxCbJ`, `testadmin`/`TestPass123` at `/employee/login`
+- Customer account (`/account`): any 10-digit phone + 4+ char password (lightweight client session)
+
+## Architecture
+- React 19 + FastAPI + MongoDB
+- Brand color: `#22c55e` (green-500); niche accents — emerald (anti-aging), cyan (skincare), rose (cosmetics)
+
+## Mocked / placeholder
+- Razorpay test keys, SMTP, Delhivery, WhatsApp, EMERGENT_LLM_KEY — **MOCKED** dummy values in `/app/backend/.env`
+- Routine generation is **MOCKED** category-pick simulation, not a real LLM call
+- Account auth is **CLIENT-SIDE ONLY** (localStorage)
+- Cosmetics niche page banner is a **placeholder** Unsplash image until user provides theirs
+- Product images are mostly Unsplash placeholders
 
 ### What's New (this iteration)
 1. **Niche cards** on niche-home pages (`/`, `/skincare`, `/cosmetics`) replaced with user-supplied artwork (full-bleed JPEG with title/icon/arrow baked in).

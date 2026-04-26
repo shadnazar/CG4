@@ -763,6 +763,39 @@ async def seed_niches(db):
         logging.info(f"[concerns_seed] Inserted {len(NICHES)} niches")
 
 
+async def deactivate_legacy_cosmetics_dupes(db):
+    """Deactivate legacy generic cosmetics categories that overlap with newer
+    specific sub-cats, and remap any products tagged on the old slug to the new
+    specific slug. Idempotent — safe to run on every restart."""
+    LEGACY_TO_NEW = {
+        # legacy generic -> preferred specific
+        "cosmetics-makeup": None,    # deactivate parent (too generic)
+        "lipstick": "lipstick-gloss",
+        "eye-makeup": "kajal-eyeliner",
+        "face-makeup": "foundation-concealer",
+    }
+    deactivated = 0
+    remapped = 0
+    for legacy, new_slug in LEGACY_TO_NEW.items():
+        # Mark legacy category inactive
+        r = await db.categories.update_one(
+            {"slug": legacy, "is_active": True},
+            {"$set": {"is_active": False, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        if r.modified_count:
+            deactivated += 1
+        # Remap products if a replacement exists
+        if new_slug:
+            r2 = await db.products.update_many(
+                {"category": legacy},
+                {"$set": {"category": new_slug, "updated_at": datetime.now(timezone.utc).isoformat()}}
+            )
+            if r2.modified_count:
+                remapped += r2.modified_count
+    if deactivated or remapped:
+        logging.info(f"[concerns_seed] Deactivated {deactivated} legacy cosmetics cats, remapped {remapped} products")
+
+
 async def run_concerns_seed(db):
     """Run all concerns/categories/products seed (idempotent)."""
     try:
@@ -771,6 +804,7 @@ async def run_concerns_seed(db):
         await backfill_existing_product_concerns(db)
         await backfill_product_niches(db)
         await seed_niches(db)
+        await deactivate_legacy_cosmetics_dupes(db)
         logging.info("[concerns_seed] All concerns/categories/products seed completed")
     except Exception as e:
         logging.error(f"[concerns_seed] Failed: {e}", exc_info=True)
