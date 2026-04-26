@@ -1,0 +1,115 @@
+{
+  "project_name": "Celesta Glow Mobile E-Commerce",
+  "theme": "light",
+  "typography": {
+    "headings": "Outfit",
+    "body": "DM Sans",
+    "notes": "Outfit provides a clean, modern, slightly rounded clinical feel perfect for skincare. DM Sans ensures maximum legibility on mobile. DO NOT use Inter or generic sans for headings. Use tracking-tight for headings above 32px."
+  },
+  "colors": {
+    "primary": "#0ea5e9",
+    "primary_foreground": "#ffffff",
+    "secondary": "#f0f9ff",
+    "background": "#ffffff",
+    "surface": "#f8fafc",
+    "text_primary": "#0f172a",
+    "text_secondary": "#475569",
+    "accent": "#0284c7",
+    "border": "#e2e8f0",
+    "success": "#10b981",
+    "notes": "Medical/Clinical archetype. Stark whites, cool slate grays, and a trustworthy medical sky blue. No dark themes. No heavy gradients, use solid colors for a sterile, clean, and professional aesthetic."
+  },
+  "visual_enhancers": {
+    "border_radius": "rounded-2xl for main cards, rounded-full for buttons to feel accessible and safe.",
+    "shadows": "Very soft, diffuse shadows. shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+    "textures": "Clinical cleanliness. No noise or grain. Pure white backgrounds with subtle slate borders.",
+    "glassmorphism": "Only for the sticky bottom checkout bar or sticky mobile nav (bg-white/80 backdrop-blur-xl border-t border-slate-100)."
+  },
+  "layouts": {
+    "mobile_first_strict": true,
+    "container": "w-full max-w-md mx-auto min-h-screen bg-white shadow-[0_0_40px_rgba(0,0,0,0.05)] overflow-x-hidden relative",
+    "spacing": "Generous vertical spacing (gap-8, py-12) to prevent clutter. Horizontal padding strictly px-5 or px-6.",
+    "navigation": "Sticky top minimal header (Logo center, Hamburger left, Cart right).",
+    "bottom_bar": "Sticky bottom CTA on product page for instant conversion."
+  },
+  "motion": {
+    "transitions": "Smooth, subtle easing. 0.3s ease-out for all interactions.",
+    "page_load": "Fade in and slide up slightly for hero elements.",
+    "interactions": "Active states on buttons should scale down slightly (active:scale-95) for tactile mobile feedback."
+  },
+  "pages_and_components": {
+    "homepage": {
+      "rules": "NO PRODUCT PHOTOS. Focus on clinical textures, lifestyle (mature women with healthy skin), and typography-driven value props.",
+      "sections": [
+        "Hero: Text-heavy, scientific claim ('Clinically proven to reduce fine lines in 4 weeks'), backed by abstract serum texture image.",
+        "Trust Bar: 'Dermatologist Tested', 'Cruelty Free', 'Paraben Free' icons in a simple horizontal scroll.",
+        "Benefits Bento: Grid showing 'Hydration', 'Firmness', 'Glow' using abstract water splash images.",
+        "Testimonials: Clean cards with verified purchase tags.",
+        "CTA: Solid medical blue button 'Explore the Science'."
+      ]
+    },
+    "product_page": {
+      "rules": "Highly converting, frictionless mobile layout.",
+      "sections": [
+        "Image Gallery: Full width, square ratio (aspect-square) with snap scroll. (Product photos ARE allowed here).",
+        "Header: Title, Reviews (stars), Price (₹399 Prepaid, ₹450 COD explicitly shown).",
+        "Sticky Bottom Bar: Fixed to bottom of screen 'Add to Cart / Buy Now' always visible on scroll.",
+        "Accordion Details: Ingredients, How to Use, Clinical Results (use Shadcn Accordion)."
+      ]
+    },
+    "blog_list": {
+      "rules": "Clean list view, large legible titles, reading time tags."
+    },
+    "checkout_flow": {
+      "rules": "Simple, one-page mobile-optimized form. Large input fields (h-12 or h-14) to prevent fat-finger errors. Shadcn forms."
+    }
+  },
+  "accessibility": {
+    "touch_targets": "Minimum 48x48px for all clickable elements.",
+    "contrast": "Ensure primary blue against white passes AA contrast. Text must be #0F172A for high legibility.",
+    "font_size": "Base font size 16px to prevent iOS auto-zoom on inputs. Headings strictly scaled for mobile (text-3xl max)."
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.pexels.com/photos/6724484/pexels-photo-6724484.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "lifestyle",
+        "description": "Mature woman doing self-care routine. Use in homepage testimonials or brand story section."
+      },
+      {
+        "url": "https://images.pexels.com/photos/6724461/pexels-photo-6724461.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "lifestyle",
+        "description": "Woman using jade roller. Use for blog hero or 'How to apply' section."
+      },
+      {
+        "url": "https://images.pexels.com/photos/6496467/pexels-photo-6496467.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "texture",
+        "description": "Macro clear cosmetic gel with air bubbles. Use as homepage hero background or clinical science section."
+      },
+      {
+        "url": "https://images.pexels.com/photos/247759/pexels-photo-247759.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "texture",
+        "description": "Blue water droplet splash. Use in hydration benefits section."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Strictly enforce mobile-first view. The root App layout should wrap content in `<div className='w-full max-w-md mx-auto min-h-screen bg-white shadow-xl relative overflow-x-hidden'>` to simulate a mobile device on desktop and provide a perfect mobile experience.",
+    "Update `tailwind.config.js` to replace Inter/Playfair with Outfit/DM Sans. Adjust the primary colors to Medical Blue.",
+    "Ensure all form inputs are `text-base` (16px) so mobile browsers do not zoom in when focused.",
+    "For the homepage, strictly DO NOT render any product bottle images. Use the provided macro texture images (gel bubbles, water splash) and lifestyle images.",
+    "Build the product page with a fixed bottom CTA that appears after the user scrolls past the main buy button.",
+    "Price logic: Clearly show ₹399 as Prepaid price and ₹450 as COD price in the selection toggles.",
+    "Use Lucide-react for all icons (clean, stroke-based clinical feel).",
+    "Add `data-testid` to all interactive elements."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic outputs. Avoid this by strictly following the 'Clinical Skincare' aesthetic—stark whites, precise medical blue accents, and generous whitespace.",
+    "Do not center-align body text. Left-align paragraphs for clinical readability.",
+    "Do not use dark backgrounds for containers. Use pure white (#FFF) or slate-50 (#F8FAFC).",
+    "Do not use generic emoji characters. Use Lucide icons.",
+    "Use 2x more padding than usual for an uncluttered look (e.g., p-6 or p-8 instead of p-4).",
+    "All interactive and key informational elements MUST include a `data-testid` attribute to facilitate robust automated testing.",
+    "Do not use complete transparent background in header, overlays, or any surface that has content under it."
+  ]
+}
