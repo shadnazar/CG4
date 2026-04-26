@@ -35,7 +35,7 @@ function Navigation() {
 
   const navLinks = [
     { path: '/', label: 'Home' },
-    { path: '/shop', label: 'Shop' },
+    { path: '/categories', label: 'Categories' },
     { path: '/consultation', label: 'Skin Analysis', icon: Stethoscope, highlight: true },
     { path: '/track-order', label: 'Track Order', icon: Package },
     { path: '/blog', label: 'Beauty Tips' },
@@ -53,8 +53,8 @@ function Navigation() {
           </button>
 
           <Link to="/" className="absolute left-1/2 transform -translate-x-1/2 text-center" data-testid="logo-link">
-            <span className="font-heading text-xl font-bold tracking-[0.15em] text-gray-900">CELESTA</span>
-            <span className="block text-[10px] tracking-[0.4em] text-gray-500 -mt-0.5">G L O W</span>
+            <span className="block text-[20px] tracking-[0.32em] text-slate-900 leading-none" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500 }}>CELESTA</span>
+            <span className="block text-[10px] tracking-[0.55em] text-slate-500 mt-1" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 400 }}>G L O W</span>
           </Link>
 
           <div className="flex items-center gap-0">
@@ -72,9 +72,9 @@ function Navigation() {
 
         {/* Desktop header (lg+) */}
         <div className="hidden lg:flex items-center justify-between max-w-7xl mx-auto px-6 xl:px-8 h-16">
-          <Link to="/" className="flex items-baseline gap-2 flex-shrink-0 whitespace-nowrap" data-testid="logo-link-desktop">
-            <span className="font-heading text-[26px] font-black tracking-[0.22em] text-gray-900 leading-none">CELESTA</span>
-            <span className="font-heading text-[26px] font-light tracking-[0.22em] text-green-700 leading-none">GLOW</span>
+          <Link to="/" className="flex flex-col items-center flex-shrink-0 leading-none" data-testid="logo-link-desktop">
+            <span className="text-[26px] tracking-[0.32em] text-slate-900 leading-none" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500 }}>CELESTA</span>
+            <span className="text-[11px] tracking-[0.55em] text-slate-500 leading-none mt-1" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 400 }}>G L O W</span>
           </Link>
           <nav className="flex items-center gap-1">
             {navLinks.map(link => (
@@ -116,8 +116,8 @@ function Navigation() {
           <div className="absolute left-0 top-0 bottom-0 w-80 bg-white shadow-xl" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <div>
-                <span className="font-heading text-lg font-bold tracking-[0.15em] text-gray-900">CELESTA</span>
-                <span className="block text-[9px] tracking-[0.4em] text-gray-500 -mt-0.5">G L O W</span>
+                <span className="block text-[18px] tracking-[0.32em] text-slate-900 leading-none" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 500 }}>CELESTA</span>
+                <span className="block text-[9px] tracking-[0.55em] text-slate-500 mt-1" style={{ fontFamily: '"Cormorant Garamond", serif', fontWeight: 400 }}>G L O W</span>
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="p-2 -mr-2" data-testid="close-menu-button">
                 <X size={24} className="text-gray-900" />

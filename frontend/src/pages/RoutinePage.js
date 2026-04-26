@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Sparkles, Sunrise, Moon, Droplet, Shield, Wand2, ArrowRight, Loader2, Check, Camera, X } from 'lucide-react';
+import { Sparkles, Sunrise, Moon, Droplet, Shield, Wand2, ArrowRight, Loader2, Check, Camera, X, ShoppingCart, Plus } from 'lucide-react';
+import { addToCart } from './Homepage';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
@@ -295,43 +296,68 @@ export default function RoutinePage() {
 
         {/* Routine output */}
         {routine && (
-          <div className="mt-7 grid grid-cols-1 lg:grid-cols-2 gap-4" data-testid="routine-output">
-            {[{ key: 'am', title: 'Morning Ritual', icon: Sunrise, accent: 'from-amber-300 to-emerald-300', steps: routine.am }, { key: 'pm', title: 'Night Ritual', icon: Moon, accent: 'from-violet-400 to-cyan-300', steps: routine.pm }].map(({ key, title, icon: TitleIcon, accent, steps }) => (
-              <div key={key} className="rounded-3xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/10 p-5 sm:p-6" data-testid={`routine-card-${key}`}>
-                <div className="flex items-center gap-2 mb-4">
-                  <TitleIcon size={18} className="text-white/80" />
-                  <h2 className={`font-heading text-xl font-black bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>{title}</h2>
-                </div>
-                <ol className="space-y-3">
-                  {steps.map(({ slot, product }, i) => {
-                    const SlotIcon = slot.icon;
-                    return (
-                      <li key={`${key}-${slot.id}-${i}`} className="relative flex items-start gap-3 rounded-2xl bg-white/[0.03] ring-1 ring-white/5 p-3 hover:bg-white/[0.06] transition-colors" data-testid={`routine-step-${key}-${i}`}>
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-white/10 to-white/0 ring-1 ring-white/10 flex items-center justify-center flex-shrink-0">
-                          <SlotIcon size={15} className="text-white/80" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[10px] font-black tracking-[0.2em] uppercase text-emerald-300/80">Step {i + 1} · {slot.label}</p>
-                          {product ? (
-                            <Link to={`/product/${product.slug}`} className="block mt-0.5 group">
-                              <p className="text-sm font-bold text-white truncate group-hover:text-emerald-300 transition-colors">{product.short_name || product.name}</p>
-                              <p className="text-[11px] text-white/50 truncate">{product.size} · ₹{product.prepaid_price}</p>
-                            </Link>
-                          ) : (
-                            <p className="text-sm text-white/40 mt-0.5">— pick from shop —</p>
-                          )}
-                        </div>
-                        {product?.images?.[0] && (
-                          <div className="w-12 h-12 rounded-xl bg-white/5 ring-1 ring-white/10 overflow-hidden flex-shrink-0">
-                            <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
+          <div className="mt-6" data-testid="routine-output">
+            {/* "Add all" CTA */}
+            <button
+              onClick={() => {
+                const all = [...routine.am, ...routine.pm].map(s => s.product).filter(Boolean);
+                const seen = new Set();
+                all.forEach(p => { if (!seen.has(p.slug)) { addToCart(p.slug); seen.add(p.slug); } });
+              }}
+              data-testid="routine-add-all-btn"
+              className="w-full mb-4 flex items-center justify-center gap-2 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-black py-3 rounded-2xl text-xs sm:text-sm tracking-wide shadow-lg shadow-emerald-500/30 transition-all active:scale-[0.99]"
+            >
+              <ShoppingCart size={15} /> Add entire routine to cart
+            </button>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+              {[{ key: 'am', title: 'Morning Ritual', icon: Sunrise, accent: 'from-amber-300 to-emerald-300', steps: routine.am }, { key: 'pm', title: 'Night Ritual', icon: Moon, accent: 'from-violet-400 to-cyan-300', steps: routine.pm }].map(({ key, title, icon: TitleIcon, accent, steps }) => (
+                <div key={key} className="rounded-3xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/10 p-4 sm:p-5" data-testid={`routine-card-${key}`}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <TitleIcon size={18} className="text-white/80" />
+                    <h2 className={`font-heading text-lg sm:text-xl font-black bg-gradient-to-r ${accent} bg-clip-text text-transparent`}>{title}</h2>
+                  </div>
+                  <ol className="space-y-2">
+                    {steps.map(({ slot, product }, i) => {
+                      const SlotIcon = slot.icon;
+                      return (
+                        <li key={`${key}-${slot.id}-${i}`} className="relative flex items-stretch gap-2.5 rounded-2xl bg-white/[0.03] ring-1 ring-white/5 p-2.5 hover:bg-white/[0.06] transition-colors" data-testid={`routine-step-${key}-${i}`}>
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-white/10 to-white/0 ring-1 ring-white/10 flex items-center justify-center flex-shrink-0 self-center">
+                            <SlotIcon size={14} className="text-white/80" />
                           </div>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-            ))}
+                          <div className="min-w-0 flex-1 self-center">
+                            <p className="text-[9px] font-black tracking-[0.18em] uppercase text-emerald-300/80">Step {i + 1} · {slot.label}</p>
+                            {product ? (
+                              <Link to={`/product/${product.slug}`} className="block mt-0.5 group">
+                                <p className="text-[13px] font-bold text-white truncate group-hover:text-emerald-300 transition-colors">{product.short_name || product.name}</p>
+                                <p className="text-[10px] text-white/50 truncate">{product.size} · ₹{product.prepaid_price}</p>
+                              </Link>
+                            ) : (
+                              <p className="text-[13px] text-white/40 mt-0.5">— pick from shop —</p>
+                            )}
+                          </div>
+                          {product?.images?.[0] && (
+                            <div className="w-11 h-11 rounded-xl bg-white/5 ring-1 ring-white/10 overflow-hidden flex-shrink-0 self-center">
+                              <img src={product.images[0]} alt="" className="w-full h-full object-contain" />
+                            </div>
+                          )}
+                          {product && (
+                            <button
+                              onClick={(e) => { e.preventDefault(); addToCart(product.slug); }}
+                              data-testid={`routine-step-add-${key}-${i}`}
+                              aria-label={`Add ${product.short_name || product.name} to cart`}
+                              className="self-center w-9 h-9 rounded-xl bg-emerald-400 hover:bg-emerald-300 text-emerald-950 flex items-center justify-center transition-colors active:scale-95 flex-shrink-0 shadow-md shadow-emerald-500/30"
+                            >
+                              <Plus size={16} strokeWidth={2.6} />
+                            </button>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 

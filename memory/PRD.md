@@ -1,6 +1,74 @@
 # Celesta Glow PRD
 
-## Latest Update: April 26, 2026 — Search autocomplete + circular strips back + categories redesign
+## Latest Update: April 26, 2026 — Niche-card cleanup, brand serif, anti-aging reviews/faq/dermat
+
+### What's New (this iteration)
+1. **Niche cards (top 3)**:
+   - Reverted to **image-only** (the user-supplied artwork is the entire card; no code-rendered text or icons overlaid). Tap navigates to the niche home.
+   - **Smaller on desktop** (max-w-3xl) — no longer dominates the page above the fold.
+   - **Only render on niche home routes** (`/`, `/skincare`, `/cosmetics`). Removed from cart, product detail, account, etc. via `PublicLayout` route check.
+2. **Brand title font** — switched "CELESTA / G L O W" everywhere (mobile header, desktop header, mobile menu) to **Cormorant Garamond** (loaded via Google Fonts) with wide letter-spacing — elegant high-contrast serif that matches the user's reference image.
+3. **Desktop nav** — `Shop` link replaced with **`Categories`** linking to the new `/categories` page. Skin Analysis kept.
+4. **Cosmetics niche banner** swapped for a **clean text-free product shot** (no baked-in product text either).
+5. **Anti-Aging Homepage** got a major refactor:
+   - **Complete Anti-Aging Kit** moved BEFORE bestsellers, redesigned as a **single-image product card** (one hero image, no multi-image grid).
+   - **Customer Reviews** section (4 verified reviewer cards with photos, ratings, days-result badges).
+   - **Dermatologist** section ("Built with board-certified dermatologists for Indian skin") with stats (4 weeks / 0 parabens / 98% softer) and "Book free consult" CTA.
+   - **FAQ accordion** (6 questions covering results timeline, retinol safety, stacking, dermat testing, money-back, shipping). First item open by default.
+   - All three sections appear **only on `/`** (Anti-Aging niche page).
+6. **Routine page**:
+   - Per-step **Add-to-Cart `+` button** (emerald pill, right of each step row) so users can add individual products.
+   - **"Add entire routine to cart"** primary CTA above AM/PM grid that adds all 8 step products in one click (deduped).
+   - Tightened spacing — removed wasted vertical gaps.
+
+### Three-Niche Structure (unchanged)
+- Anti-Aging (`/`) — emerald
+- Skincare (`/skincare`) — cyan
+- Cosmetics & Makeup (`/cosmetics`) — rose
+
+### Backend
+- 17 products + 21 active categories + 8 concerns + 3 niches + 4 combos
+- API & admin/auth: unchanged (see prior entries)
+
+## Pending / Backlog
+
+### P1
+- **Cosmetics niche page banner artwork** (user will provide their own later — current is a clean cosmetics product shot placeholder)
+- Cart and Checkout page UI redesign to match the new product-card style (deferred from this iteration)
+- Anti-Aging concern landing page redesign (similar to skincare category UI when user clicks "Anti-Aging" from `/concern/...`)
+- Wire backend auth for `/account` (`/api/customers/login` + bcrypt + JWT)
+- Wire real LLM-based routine + selfie analysis once a real EMERGENT_LLM_KEY is provided
+- Real packaging photography for the 17 products
+
+### P2
+- Order Success page Meta Pixel + Google Ads conversion ID wiring
+- `/category/:slug` graceful empty state for all 21 active categories
+
+### P3 — Growth
+- "For You" personalized strip
+- Customer referral program
+- Wishlist persistence
+- Subscribe & Save monthly auto-reorder
+
+## Credentials
+- Admin: password `celestaglow2024` at `/admin`
+- Employees: `orderteam`/`VclhxCbJ`, `testadmin`/`TestPass123` at `/employee/login`
+- Customer account (`/account`): any 10-digit phone + 4+ char password (lightweight client session)
+
+## Architecture
+- React 19 + FastAPI + MongoDB
+- Brand color: `#22c55e` (green-500); niche accents — emerald (anti-aging), cyan (skincare), rose (cosmetics)
+- Brand title font: **Cormorant Garamond** (Google Fonts CDN). Heading: Outfit. Body: DM Sans.
+
+## Mocked / placeholder
+- Razorpay test keys, SMTP, Delhivery, WhatsApp, EMERGENT_LLM_KEY — **MOCKED** dummy values in `/app/backend/.env`
+- Routine generation is **MOCKED** category-pick simulation (no real AI yet)
+- Selfie upload is captured + compressed but **NOT sent anywhere** (no analysis backend yet)
+- Account auth is **CLIENT-SIDE ONLY** (localStorage)
+- Cosmetics niche page banner is a **placeholder** Unsplash image until user provides theirs
+- Reviewer photos in Reviews section are **stock Unsplash** portraits
+- Dermatologist section image is a **stock Unsplash** healthcare portrait
+- Mobile banner images for Anti-Aging & Skincare are **stock Unsplash** crops
 
 ### What's New (this iteration)
 1. **`<SearchBar>` upgraded with niche-scoped autocomplete**:

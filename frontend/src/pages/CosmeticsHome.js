@@ -13,8 +13,8 @@ const ACCENT = '#be185d';
 const ACCENT_DARK = '#831843';
 const ACCENT_BG = '#fce7f3';
 
-/* Cosmetics banner — placeholder until user supplies theirs */
-const BANNER_IMG = 'https://images.unsplash.com/photo-1631730486572-226d1f595b68?auto=format&fit=crop&w=1664&q=80';
+/* Cosmetics banner — clean text-free product shot until user supplies their own. */
+const BANNER_IMG = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1664&q=80';
 
 export default function CosmeticsHome() {
   const [products, setProducts] = useState([]);

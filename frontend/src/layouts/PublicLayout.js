@@ -1,4 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { useLocation } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import NicheCardSwitcher from '../components/NicheCardSwitcher';
 import MobileBottomNav from '../components/MobileBottomNav';
@@ -11,6 +12,9 @@ const RecentPurchaseNotification = lazy(() => import('../components/RecentPurcha
 const DiscountPopup = lazy(() => import('../components/DiscountPopup'));
 const CookieConsent = lazy(() => import('../components/CookieConsent'));
 
+// Niche cards only render on the 3 niche home routes
+const NICHE_HOME_ROUTES = ['/', '/skincare', '/cosmetics'];
+
 // Simple loading fallback (empty, so no flash)
 const EmptyFallback = () => null;
 
@@ -18,6 +22,8 @@ function PublicLayout({ children }) {
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const [showNotifications, setShowNotifications] = useState(true); // Show immediately
   const { trackAction } = useTracking();
+  const location = useLocation();
+  const showNicheCards = NICHE_HOME_ROUTES.includes(location.pathname);
   
   useEffect(() => {
     // Show discount popup after 8 seconds (after welcome notification finishes)
@@ -47,8 +53,8 @@ function PublicLayout({ children }) {
       {/* Navigation - always visible */}
       <Navigation />
 
-      {/* Top 3-card niche switcher (Anti-Aging / Skincare / Cosmetics) */}
-      <NicheCardSwitcher />
+      {/* Top 3-card niche switcher — only visible on niche home routes */}
+      {showNicheCards && <NicheCardSwitcher />}
       
       {/* Main content */}
       <main className="pb-20 lg:pb-0">
