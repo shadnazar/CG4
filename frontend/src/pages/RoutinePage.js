@@ -1,9 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Sparkles, Sunrise, Moon, Droplet, Shield, Wand2, ArrowRight, Loader2, Check } from 'lucide-react';
+import { Sparkles, Sunrise, Moon, Droplet, Shield, Wand2, ArrowRight, Loader2, Check, Camera, X } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL;
+
+/* Compress an image File on the client to a JPEG dataURL (max width 720px, quality 0.72).
+   Keeps payloads tiny and prevents giant phone-camera uploads from slowing the page. */
+async function compressImage(file, { maxWidth = 720, quality = 0.72 } = {}) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const ratio = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 /* Skin profile options */
 const SKIN_TYPES = [
@@ -54,6 +80,9 @@ export default function RoutinePage() {
   const [selectedConcerns, setSelectedConcerns] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [routine, setRoutine] = useState(null); // { am: [{slot, product}], pm: [...] }
+  const [photo, setPhoto] = useState(null); // compressed JPEG dataURL
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     axios.get(`${API}/api/products`).then(r => setProducts(r.data || [])).catch(() => {});
@@ -62,6 +91,23 @@ export default function RoutinePage() {
   const toggleConcern = (c) => {
     setSelectedConcerns(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
   };
+
+  const handlePhoto = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoBusy(true);
+    try {
+      const compressed = await compressImage(file);
+      setPhoto(compressed);
+    } catch {
+      // ignore
+    } finally {
+      setPhotoBusy(false);
+      // reset input so the same file can be selected again
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+  const clearPhoto = () => setPhoto(null);
 
   const handleGenerate = () => {
     setGenerating(true);
@@ -112,8 +158,55 @@ export default function RoutinePage() {
 
         {/* Profile card */}
         <div className="rounded-3xl bg-white/[0.04] backdrop-blur-xl ring-1 ring-white/10 p-5 sm:p-6 shadow-2xl shadow-emerald-900/10" data-testid="routine-profile-card">
-          {/* Skin type */}
+          {/* Optional selfie upload — auto-compressed client-side */}
           <div>
+            <p className="text-[10px] font-black tracking-[0.25em] uppercase text-white/50 mb-2">Selfie <span className="text-white/30 font-medium normal-case tracking-normal">(optional, helps personalize)</span></p>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={photoBusy}
+                data-testid="routine-photo-btn"
+                className="relative w-20 h-20 rounded-2xl ring-1 ring-white/15 bg-white/[0.06] hover:bg-white/[0.12] transition-colors flex items-center justify-center overflow-hidden flex-shrink-0 disabled:opacity-60"
+              >
+                {photoBusy ? (
+                  <Loader2 size={18} className="animate-spin text-white/60" />
+                ) : photo ? (
+                  <img src={photo} alt="Your selfie" className="w-full h-full object-cover" data-testid="routine-photo-preview" />
+                ) : (
+                  <div className="flex flex-col items-center gap-0.5 text-white/60">
+                    <Camera size={20} />
+                    <span className="text-[9px] font-black tracking-wider">UPLOAD</span>
+                  </div>
+                )}
+              </button>
+              {photo && (
+                <button
+                  type="button"
+                  onClick={clearPhoto}
+                  data-testid="routine-photo-clear"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/5 ring-1 ring-white/10 hover:bg-white/10 text-xs text-white/70"
+                >
+                  <X size={12} /> Remove
+                </button>
+              )}
+              <p className="text-[11px] text-white/45 leading-snug">
+                JPG/PNG up to 10 MB.<br />Auto-compressed in your browser before use.
+              </p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="user"
+                className="hidden"
+                onChange={handlePhoto}
+                data-testid="routine-photo-input"
+              />
+            </div>
+          </div>
+
+          {/* Skin type */}
+          <div className="mt-5">
             <p className="text-[10px] font-black tracking-[0.25em] uppercase text-white/50 mb-2">Skin Type</p>
             <div className="flex flex-wrap gap-2">
               {SKIN_TYPES.map(t => (

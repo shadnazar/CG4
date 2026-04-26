@@ -5,6 +5,7 @@ import { ArrowRight, ChevronRight, Flame, Sparkles } from 'lucide-react';
 import SearchBar from '../components/SearchBar';
 import TrustStrip from '../components/TrustStrip';
 import NicheHero from '../components/NicheHero';
+import CircularCategoryStrip from '../components/CircularCategoryStrip';
 import { ProductCard } from './ConcernCategoryPage';
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -13,23 +14,20 @@ const ACCENT_DARK = '#155e75';
 const ACCENT_BG = '#cffafe';
 
 const BANNER_IMG = 'https://customer-assets.emergentagent.com/job_cg3-render/artifacts/v5vv0e5r_546BA64A-4E90-4675-B7DB-3D2EFDB10675.png';
+/* Mobile-only tighter crop (clean wide skincare shot) */
+const BANNER_IMG_MOBILE = 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1200&q=80';
 
-/**
- * SkincareHome — niche home for /skincare.
- * Identical structure to AntiAgingHome and CosmeticsHome:
- *  1. Search bar
- *  2. Hero banner (image-as-background, text-overlay-left)
- *  3. Trust strip
- *  4. Bestsellers grid
- *  5. CTA card
- */
 export default function SkincareHome() {
   const [products, setProducts] = useState([]);
+  const [concerns, setConcerns] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${API}/api/products?niche=skincare`)
-      .then(r => setProducts(r.data || []))
+    Promise.all([
+      axios.get(`${API}/api/products?niche=skincare`),
+      axios.get(`${API}/api/concerns`),
+    ])
+      .then(([p, c]) => { setProducts(p.data || []); setConcerns(c.data || []); })
       .finally(() => setLoading(false));
   }, []);
 
@@ -40,10 +38,25 @@ export default function SkincareHome() {
 
   return (
     <div className="bg-stone-50/40" data-testid="skincare-home">
-      <SearchBar accent={ACCENT} />
+      <SearchBar accent={ACCENT} niche="skincare" testId="skincare-search-bar" />
+
+      {/* Circular concern strip — below search per IMG_1668 reference */}
+      <section className="bg-white border-b border-stone-100">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+          <CircularCategoryStrip
+            items={concerns}
+            routePrefix="/concern"
+            title={<>Shop by <span className="italic text-cyan-700">Concern</span></>}
+            subtitle="Pick your skin problem"
+            accent={ACCENT}
+            testIdPrefix="skincare-concern"
+          />
+        </div>
+      </section>
 
       <NicheHero
         bgImage={BANNER_IMG}
+        mobileBgImage={BANNER_IMG_MOBILE}
         eyebrow="Skincare Niche"
         eyebrowDot={ACCENT}
         eyebrowText={ACCENT_DARK}
@@ -56,7 +69,7 @@ export default function SkincareHome() {
         testId="skincare-hero"
       />
 
-      <div className="pt-5 sm:pt-7">
+      <div className="pt-4 sm:pt-7">
         <TrustStrip accent={ACCENT} accentBg={ACCENT_BG} />
       </div>
 

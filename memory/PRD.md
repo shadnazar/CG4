@@ -1,6 +1,82 @@
 # Celesta Glow PRD
 
-## Latest Update: April 26, 2026 — Unified niche pages + banner-as-background hero
+## Latest Update: April 26, 2026 — Search autocomplete + circular strips back + categories redesign
+
+### What's New (this iteration)
+1. **`<SearchBar>` upgraded with niche-scoped autocomplete**:
+   - Pass `niche="anti-aging" | "skincare" | "cosmetics"` and the input filters live to that niche only.
+   - As-you-type suggestion dropdown (top 6) showing thumbnail + name + ingredient + price; click to navigate to product, Enter to see full results.
+   - 5-min in-memory cache, keyboard arrow navigation, Esc to close.
+   - Mobile-safe `fontSize: 16px` (no iOS zoom), `autoComplete="off"`.
+2. **Circular concern/category strips brought back** below the search bar on the niche pages:
+   - `/skincare` → "Pick your skin problem" strip (concerns)
+   - `/cosmetics` → "Lip · Eye · Brow · Face" strip (categories)
+   - `/` (Anti-Aging) → no strip (per requirement)
+3. **Niche hero `<NicheHero>` now accepts `mobileBgImage`**: smaller, tighter mobile crop with no wasted vertical space (mobile aspect/height tightened, padding reduced).
+   - Anti-Aging mobile uses a clean wide cream/serum shot
+   - Skincare mobile uses a clean wide skincare shot
+   - Cosmetics mobile = unchanged (user said it was good)
+4. **Niche card icons fixed** — `NicheCardSwitcher` reverted to code-rendered design so the icon top-right always matches the niche label:
+   - Anti-Aging → `Sparkles`
+   - Skincare → `Droplet`
+   - Cosmetics → `Palette` (was `Lock`, now correct)
+5. **`/categories` page redesigned** — single-scroll mobile-first:
+   - No pill switcher, no icons
+   - 3 stacked sections (Anti-Aging products → Skincare categories → Cosmetics categories)
+   - Each section: niche-color tagline + heading + "View all" link + 4-col image-circle grid
+   - One unified search input filters all 3 sections live
+6. **Routine page** — added optional **selfie upload** tile with **client-side image compression** (max 720px wide, JPEG q=0.72) to keep payloads tiny and prevent giant phone-camera files from slowing the page.
+
+### Three-Niche Structure
+1. **Anti-Aging** (`/`) — emerald
+2. **Skincare** (`/skincare`) — cyan
+3. **Cosmetics & Makeup** (`/cosmetics`) — rose
+
+### Backend
+- Collections: `niches`, `concerns`, `categories`, `products`, `combos`
+- 17 products + 21 active categories (4 deactivated dupes hidden) + 8 concerns + 3 niches + 4 combos
+- API: `GET /api/niches`, `/api/concerns(/:slug)`, `/api/categories(/:slug)` (active only), `/api/products?niche=&category=&concern=`
+- Order tracking: `POST /api/track-order { phone }`
+- Admin: `/admin` → password `celestaglow2024`
+
+## Pending / Backlog
+
+### P1
+- **Cosmetics niche page banner** (user will provide their own artwork later — currently a placeholder Unsplash shot)
+- Wire real backend auth for `/account` — `/api/customers/login` with bcrypt + JWT
+- Wire **real AI** for routine generation + selfie analysis using Emergent LLM key (currently the routine pick is a category-slot simulation, selfie is captured but not analyzed)
+- Real packaging photography for the 17 products
+- Re-introduce FAQ accordion as a footer-shared block
+
+### P2
+- Order Success page Meta Pixel + Google Ads conversion ID wiring
+- `/category/:slug` graceful empty state for all 21 active categories
+- Product detail page: product card variant matching the bestsellers grid
+
+### P3 — Growth
+- "For You" personalized strip
+- Customer referral program
+- Wishlist persistence
+- Subscribe & Save monthly auto-reorder
+- Save-routine-as-PDF (skin prescription card)
+
+## Credentials
+- Admin: password `celestaglow2024` at `/admin`
+- Employees: `orderteam`/`VclhxCbJ`, `testadmin`/`TestPass123` at `/employee/login`
+- Customer account (`/account`): any 10-digit phone + 4+ char password (lightweight client session)
+
+## Architecture
+- React 19 + FastAPI + MongoDB
+- Brand color: `#22c55e` (green-500); niche accents — emerald (anti-aging), cyan (skincare), rose (cosmetics)
+
+## Mocked / placeholder
+- Razorpay test keys, SMTP, Delhivery, WhatsApp, EMERGENT_LLM_KEY — **MOCKED** dummy values in `/app/backend/.env`
+- Routine generation is **MOCKED** category-pick simulation (no real AI yet)
+- Selfie upload is captured + compressed but **NOT sent anywhere** (no analysis backend yet)
+- Account auth is **CLIENT-SIDE ONLY** (localStorage)
+- Cosmetics niche page banner is a **placeholder** Unsplash image until user provides theirs
+- Mobile banner images for Anti-Aging & Skincare are stock Unsplash crops — replace with branded artwork when available
+- Product images are mostly Unsplash placeholders
 
 ### What's New (this iteration)
 1. **New `<NicheHero>` component** — single banner card with the full-bleed user-provided artwork as the background and the text content (eyebrow chip → big italic title → subtitle → 2 pill CTAs) overlaid on the LEFT half. White-fade gradient overlay ensures legibility on top of any artwork. Used identically across all 3 niche pages.

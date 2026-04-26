@@ -5,6 +5,7 @@ import { ArrowRight, ChevronRight, Flame, Sparkles } from 'lucide-react';
 import SearchBar from '../components/SearchBar';
 import TrustStrip from '../components/TrustStrip';
 import NicheHero from '../components/NicheHero';
+import CircularCategoryStrip from '../components/CircularCategoryStrip';
 import { ProductCard } from './ConcernCategoryPage';
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -12,25 +13,31 @@ const ACCENT = '#be185d';
 const ACCENT_DARK = '#831843';
 const ACCENT_BG = '#fce7f3';
 
-/* Cosmetics banner — placeholder in the same wide-product-on-pale-background style.
-   User will replace with their own banner artwork later. */
+/* Cosmetics banner — placeholder until user supplies theirs */
 const BANNER_IMG = 'https://images.unsplash.com/photo-1631730486572-226d1f595b68?auto=format&fit=crop&w=1664&q=80';
 
-/**
- * CosmeticsHome — niche home for /cosmetics. Identical structure to other niche pages:
- *  1. Search bar
- *  2. Hero banner (image-as-background, text-overlay-left)
- *  3. Trust strip
- *  4. Bestsellers grid
- *  5. Complete-the-Look CTA
- */
 export default function CosmeticsHome() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${API}/api/products?niche=cosmetics`)
-      .then(r => setProducts(r.data || []))
+    Promise.all([
+      axios.get(`${API}/api/products?niche=cosmetics`),
+      axios.get(`${API}/api/categories`),
+    ])
+      .then(([p, c]) => {
+        setProducts(p.data || []);
+        setCategories((c.data || [])
+          .filter(x => x.group === 'cosmetics')
+          .map(x => ({
+            ...x,
+            accent_from: '#fce7f3',
+            accent_to: '#fbcfe8',
+            accent_text: '#831843',
+          }))
+        );
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -41,7 +48,21 @@ export default function CosmeticsHome() {
 
   return (
     <div className="bg-gradient-to-b from-rose-50/30 via-white to-stone-50/40" data-testid="cosmetics-home">
-      <SearchBar accent={ACCENT} />
+      <SearchBar accent={ACCENT} niche="cosmetics" testId="cosmetics-search-bar" />
+
+      {/* Circular cosmetics category strip — below search per IMG_1667 reference */}
+      <section className="bg-white border-b border-stone-100">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+          <CircularCategoryStrip
+            items={categories}
+            routePrefix="/category"
+            title={<>Shop by <span className="italic text-rose-700">Category</span></>}
+            subtitle="Lip · Eye · Brow · Face"
+            accent={ACCENT}
+            testIdPrefix="cosmetics-cat"
+          />
+        </div>
+      </section>
 
       <NicheHero
         bgImage={BANNER_IMG}
@@ -57,7 +78,7 @@ export default function CosmeticsHome() {
         testId="cosmetics-hero"
       />
 
-      <div className="pt-5 sm:pt-7">
+      <div className="pt-4 sm:pt-7">
         <TrustStrip accent={ACCENT} accentBg={ACCENT_BG} />
       </div>
 

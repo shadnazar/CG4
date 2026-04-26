@@ -15,6 +15,8 @@ const ACCENT_DARK = '#115e59';
 const ACCENT_BG = '#d1fae5';
 
 const BANNER_IMG = 'https://customer-assets.emergentagent.com/job_cg3-render/artifacts/uscaqcsg_217BA6A6-1F87-44A3-AD2C-F750B48A11EF.png';
+/* Mobile-only tighter crop (clean wide cream/serum shot) */
+const BANNER_IMG_MOBILE = 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=1200&q=80';
 
 /* ---- Cart helpers (preserved API for the rest of the app) ---- */
 const getCart = () => JSON.parse(sessionStorage.getItem('cart') || '{"items":[]}');
@@ -73,10 +75,11 @@ function Homepage() {
 
   return (
     <div className="bg-stone-50/40" data-testid="homepage">
-      <SearchBar accent={ACCENT} />
+      <SearchBar accent={ACCENT} niche="anti-aging" testId="anti-aging-search-bar" />
 
       <NicheHero
         bgImage={BANNER_IMG}
+        mobileBgImage={BANNER_IMG_MOBILE}
         eyebrow="Anti-Aging Niche"
         eyebrowDot={ACCENT}
         eyebrowText={ACCENT_DARK}
