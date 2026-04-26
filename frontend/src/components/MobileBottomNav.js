@@ -3,24 +3,23 @@ import { Link, useLocation } from 'react-router-dom';
 import { Home, LayoutGrid, Sparkles, User, ShoppingCart } from 'lucide-react';
 
 /**
- * Mobile bottom navigation bar (sticky on small screens only).
- * Shown on niche home / shop / category pages.
+ * Mobile bottom navigation bar — Home / Categories / Routine / Account / Cart.
+ * Visible on small screens only (lg:hidden).
  */
 export default function MobileBottomNav({ cartCount = 0 }) {
   const location = useLocation();
 
   const items = [
     { id: 'home', label: 'Home', icon: Home, route: '/' },
-    { id: 'cats', label: 'Categories', icon: LayoutGrid, route: '/shop' },
-    { id: 'routine', label: 'Routine', icon: Sparkles, route: '/skin-analysis' },
-    { id: 'account', label: 'Account', icon: User, route: '/track-order' },
+    { id: 'cats', label: 'Categories', icon: LayoutGrid, route: '/categories' },
+    { id: 'routine', label: 'Routine', icon: Sparkles, route: '/routine' },
+    { id: 'account', label: 'Account', icon: User, route: '/account' },
     { id: 'cart', label: 'Cart', icon: ShoppingCart, route: '/cart' },
   ];
 
   const isActive = (route, id) => {
-    if (id === 'home') return location.pathname === '/' || location.pathname === '/skincare' || location.pathname === '/cosmetics';
-    if (route === '/shop') return location.pathname.startsWith('/shop') || location.pathname.startsWith('/category') || location.pathname.startsWith('/concern');
-    return location.pathname.startsWith(route);
+    if (id === 'home') return ['/', '/skincare', '/cosmetics'].includes(location.pathname);
+    return location.pathname === route || location.pathname.startsWith(`${route}/`);
   };
 
   return (

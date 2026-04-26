@@ -195,9 +195,12 @@ function Homepage() {
                         data-testid="homepage-feature-image"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Sparkles className="w-20 h-20 text-green-200" />
-                      </div>
+                      <img
+                        src="https://customer-assets.emergentagent.com/job_cg3-render/artifacts/uscaqcsg_217BA6A6-1F87-44A3-AD2C-F750B48A11EF.png"
+                        alt="Celesta Glow Age Reset Cream"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                        data-testid="homepage-feature-image-default"
+                      />
                     )}
                   </div>
                 </div>

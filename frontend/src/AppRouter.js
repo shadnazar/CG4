@@ -15,6 +15,9 @@ const CheckoutPage = lazy(() => import('./pages/CheckoutPage'));
 const ConcernCategoryPage = lazy(() => import('./pages/ConcernCategoryPage'));
 const SkincareHome = lazy(() => import('./pages/SkincareHome'));
 const CosmeticsHome = lazy(() => import('./pages/CosmeticsHome'));
+const CategoriesPage = lazy(() => import('./pages/CategoriesPage'));
+const RoutinePage = lazy(() => import('./pages/RoutinePage'));
+const AccountPage = lazy(() => import('./pages/AccountPage'));
 
 // Lazy loaded public pages (loaded on demand)
 const OrderSuccessPage = lazy(() => import('./pages/OrderSuccessPage'));
@@ -228,6 +231,15 @@ function App() {
               } />
               <Route path="/cosmetics" element={
                 <PublicLayout><Suspense fallback={<PageLoader />}><CosmeticsHome /></Suspense></PublicLayout>
+              } />
+              <Route path="/categories" element={
+                <PublicLayout><Suspense fallback={<PageLoader />}><CategoriesPage /></Suspense></PublicLayout>
+              } />
+              <Route path="/routine" element={
+                <PublicLayout><Suspense fallback={<PageLoader />}><RoutinePage /></Suspense></PublicLayout>
+              } />
+              <Route path="/account" element={
+                <PublicLayout><Suspense fallback={<PageLoader />}><AccountPage /></Suspense></PublicLayout>
               } />
               <Route path="/concern/:slug" element={
                 <PublicLayout><Suspense fallback={<PageLoader />}><ConcernCategoryPage mode="concern" /></Suspense></PublicLayout>

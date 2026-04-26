@@ -90,7 +90,7 @@ export default function SkincareHome() {
             </div>
             <div className="lg:col-span-5">
               <div className="relative aspect-[5/4] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl ring-2 sm:ring-4 ring-white/50">
-                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=1400&q=80" alt="Skincare routine" className="w-full h-full object-cover" />
+                <img src="https://customer-assets.emergentagent.com/job_cg3-render/artifacts/v5vv0e5r_546BA64A-4E90-4675-B7DB-3D2EFDB10675.png" alt="Celesta Glow Daily Defense Sunscreen" className="w-full h-full object-cover" />
                 <div className="absolute inset-x-2 sm:inset-x-3 bottom-2 sm:bottom-3 flex gap-1.5 sm:gap-2">
                   <div className="bg-white/95 backdrop-blur rounded-xl px-2 py-1 sm:px-2.5 sm:py-1.5 flex items-center gap-1.5 shadow-md">
                     <span className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-cyan-100 flex items-center justify-center"><Star className="fill-amber-400 text-amber-400" size={11} /></span>
